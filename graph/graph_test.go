@@ -58,11 +58,14 @@ func newGraph(edges [][3]string, isDirected bool) *Graph {
 func TestBFS(t *testing.T) {
 	edges := testData()
 	g := newGraph(edges, true)
-	g.BFS("v3")
-
+	err := g.BFS("v3")
 	fmt.Println("BFS result:")
-	for _, v := range g.Vertexes {
-		fmt.Printf("v3 -> %s : %d\n", v.Name, v.Dis)
+	if err == nil {
+		for _, v := range g.Vertexes {
+			fmt.Printf("v3 -> %s : %d\n", v.Name, v.Dis)
+		}
+	} else {
+		t.Error(err)
 	}
 }
 
@@ -80,12 +83,16 @@ func TestDFS(t *testing.T) {
 func TestTopologicalSort(t *testing.T) {
 	edges := testData2()
 	g := newGraph(edges, true)
-	result, _ := g.TopologicalSort()
+	result, err := g.TopologicalSort()
 	fmt.Println("TopologicalSort result:")
-	for _, v := range result {
-		fmt.Print(v.Name, " ")
+	if err == nil {
+		for _, v := range result {
+			fmt.Print(v.Name, " ")
+		}
+		fmt.Println()
+	} else {
+		t.Error(err)
 	}
-	fmt.Println()
 }
 
 func TestTopologicalSort2(t *testing.T) {

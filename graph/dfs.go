@@ -1,7 +1,7 @@
 package graph
 
 // 发现节点或者访问完节点的时间
-var time = 0
+var time int
 
 // DFS 广度优先搜索
 // 时间复杂度: O(|V| + |E|)
