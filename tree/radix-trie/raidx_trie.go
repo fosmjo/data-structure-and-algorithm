@@ -18,6 +18,11 @@ type Result struct {
 	Value int
 }
 
+// IsLeaf return true if rt is a leaf node else false
+func (rt *RadixTrie) IsLeaf() bool {
+	return len(rt.children) == 0
+}
+
 // Find find
 func (rt *RadixTrie) Find(key string) *RadixTrie {
 	edge, child, prefix := rt.findChildWithLongestPrefix(key)
@@ -25,7 +30,7 @@ func (rt *RadixTrie) Find(key string) *RadixTrie {
 		return nil
 	}
 	// 叶子节点
-	if len(child.children) == 0 {
+	if child.IsLeaf() {
 		return child
 	}
 
@@ -41,7 +46,7 @@ func (rt *RadixTrie) AutoComplete(prefix string) []*Result {
 		return rs
 	}
 
-	if len(descendant.children) == 0 {
+	if descendant.IsLeaf() {
 		rs = append(rs, &Result{Key: prefix, Value: descendant.Value})
 		return rs
 	}
@@ -59,7 +64,7 @@ func (rt *RadixTrie) Expand() []*Result {
 	rs := make([]*Result, 0)
 
 	for edge, child := range rt.children {
-		if len(child.children) == 0 {
+		if child.IsLeaf() {
 			rs = append(rs, &Result{Key: edge, Value: child.Value})
 		} else {
 			rets := child.Expand()
@@ -83,7 +88,7 @@ func (rt *RadixTrie) Insert(key string, value int) {
 	} else {
 		if strings.HasPrefix(key, edge) {
 			// 叶子节点
-			if len(child.children) == 0 {
+			if child.IsLeaf() {
 				node := &RadixTrie{
 					children: map[string]*RadixTrie{},
 					parent:   rt,
@@ -183,7 +188,7 @@ func (rt *RadixTrie) findRadixTrie(key string) *RadixTrie {
 		return nil
 	}
 	// 叶子节点 || 内部节点
-	if len(child.children) == 0 || prefix == key {
+	if child.IsLeaf() || prefix == key {
 		return child
 	}
 
@@ -216,7 +221,7 @@ func (rt *RadixTrie) Delete(key string) {
 		return
 	}
 
-	if len(child.children) == 0 {
+	if child.IsLeaf() {
 		// delete
 		delete(rt.children, key)
 
